@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Detektor Hoaks</title>
+  <meta name="description" content="Tempel berita atau pesan berantai, lalu lihat apakah model machine learning menganggapnya hoaks. Berjalan di browser, tanpa server.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ffd23f'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='%2316213e' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="vendor/ort.wasm.min.js"></script>
+  <script defer src="vendor/ort-runtime.js"></script>
+  <script defer src="model/model-data.js"></script>
+  <script defer src="detector.js"></script>
+  <script defer src="examples.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <span class="brand">Detektor Hoaks</span>
+      <span class="status" id="status" data-state="loading" role="status">Memuat model…</span>
+    </header>
+
+    <main>
+      <h1>Apakah pesan ini hoaks?</h1>
+      <p class="lead">Tempel berita atau pesan berantai dari grup WhatsApp. Model belajar dari 8.000 berita Indonesia dan bekerja di browsermu, jadi tulisanmu tidak dikirim ke mana pun.</p>
+
+      <p class="load-error" id="load-error" hidden>
+        Model tidak bisa dimuat. Muat ulang halaman. Kalau tetap gagal, coba Chrome atau Edge versi terbaru.
+      </p>
+
+      <form id="form" class="composer">
+        <label for="text" class="sr-only">Teks yang mau diperiksa</label>
+        <textarea id="text" rows="6" maxlength="5000" spellcheck="false" placeholder="Tempel berita atau pesan berantai di sini"></textarea>
+        <div class="actions">
+          <span class="count" id="count">0 kata</span>
+          <button type="button" class="ghost" id="clear">Kosongkan</button>
+          <button type="submit" class="primary" id="go" disabled>Periksa</button>
+        </div>
+      </form>
+
+      <div class="examples">
+        <p class="examples-title">Belum punya teks? Coba salah satu contoh buatan ini.</p>
+        <div class="examples-group">
+          <span class="examples-label" id="examples-real-label">10 berita asli</span>
+          <div id="examples-real" role="group" aria-labelledby="examples-real-label"></div>
+        </div>
+        <div class="examples-group">
+          <span class="examples-label" id="examples-hoax-label">10 hoaks</span>
+          <div id="examples-hoax" role="group" aria-labelledby="examples-hoax-label"></div>
+        </div>
+      </div>
+
+      <section class="result" id="result" hidden aria-live="polite">
+        <div class="verdict">
+          <div class="stamp" id="stamp" data-tone="real" aria-hidden="true"><span id="stamp-word">ASLI</span></div>
+          <div class="verdict-text">
+            <p class="headline" id="headline"></p>
+            <p class="detail" id="detail"></p>
+            <p class="key" id="key" hidden></p>
+          </div>
+        </div>
+
+        <div class="meter" id="meter" role="img" aria-label="">
+          <div class="bar"><span class="pin" id="pin"></span></div>
+          <div class="ends"><span>Asli</span><span>Hoaks</span></div>
+        </div>
+
+        <ul class="caveats" id="caveats" hidden></ul>
+
+        <section class="clues">
+          <h2>Kata yang jadi petunjuk</h2>
+          <p class="legend">
+            <mark class="w to-hoax lv2">Condong ke hoaks</mark>
+            <mark class="w to-real lv2">Condong ke asli</mark>
+          </p>
+          <p class="marked" id="marked"></p>
+          <p class="none" id="marked-empty" hidden>Tidak ada kata yang cukup kuat untuk disorot.</p>
+        </section>
+
+        <section class="why">
+          <div>
+            <h3>Paling condong ke hoaks</h3>
+            <ul id="hoax-list"></ul>
+          </div>
+          <div>
+            <h3>Paling condong ke asli</h3>
+            <ul id="real-list"></ul>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>Model bisa salah.</strong> Cek dulu di <a href="https://turnbackhoax.id/" target="_blank" rel="noopener">TurnBackHoax</a> atau sumber resmi sebelum menyebarkan sesuatu.</p>
+      <p class="about" id="about">Memuat keterangan model…</p>
+      <p class="about">Proyek akhir kelas machine learning, dibuat dengan scikit-learn lalu dikonversi ke ONNX.</p>
+    </footer>
+  </div>
+</body>
+</html>
